@@ -1,81 +1,80 @@
-import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
-import axios from "axios";
+import axios from 'axios'
+import { useState } from 'react'
+import { Link } from 'react-router-dom'
 
 const Signin = () => {
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [loading, setLoading] = useState("false");
-  const [error, setError] = useState("null");
+const [email, setEmail] = useState("")
+const [password, setPassword] = useState("")
+const[success,setSuccess]=useState('')
+ 
 
-  const navigate = useNavigate(); // For redirection
+const[error,setError]=useState('')
 
-  const submit = async (e) => {
-    e.preventDefault();
-    setLoading("Please wait as we log you in");
-    setError("");
+ 
 
-    try {
-      const data = new FormData();
-      data.append("email", email);
-      data.append("password", password);
+const submit=async(e)=>{
+e.preventDefault()
 
-      const response = await axios.post(
-        "https://modcom2.pythonanywhere.com/api/signin",
-        data);
+try {
+const formData = new FormData();
 
-      setLoading("");
+formData.append("email",email);
+formData.append("password",password)
 
-      if (response.data.user) {
-        // Store user details in localStorage or context if needed
-        localStorage.setItem("user", JSON.stringify(response.data.user));
-        // Redirect to /land-details
-        navigate("/");
-      } 
-      else {
-        setError(response.data.message);
-      }
-    } catch (error) {
-      setLoading("");
-      setError(err.response.data.message);
-    }
-  };
+const response = await axios.post("https://modcom2.pythonanywhere.com/api/signin",formData)
+setSuccess(response.data.message)
+ 
 
+ 
 
-  return (
-    <div className="row justify-content-center mt-5">
-      <div className="col-md-6 card shadow p-4">
-            <h2>Sign In</h2>
+} catch (error) {
+setError(error.message)
+ 
 
-            <form onSubmit={submit}>
-                {loading}
-                {error}
-              <input
-                type="email"
-                className="form-control mb-3"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                className="form-control mb-3"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button type="submit" className="btn btn-primary w-100">
-                Sign In
-              </button>
-            </form>
+}
+}
+ 
 
-              Don't have an account? <Link to="/signup">Sign Up</Link>
-        
-      </div>
-    </div>
-  );
-};
+return (
+<div className='row justify-content-center mt-4'>
+<div className='col-md-6 card shadow p-4'>
+
+<h2>Sign In</h2>
+<p className="text-success"> {success}</p>
+<p className="text-danger"> {error}</p>
+
+ 
+
+<form onSubmit={submit}>
+<input type="email"
+className="form-control"
+placeholder='Enter your email'
+value={email}
+onChange={(e)=>setEmail(e.target.value)}
+
+ 
+
+/> <br />
+{/* {email} */}
+<input type="password"
+className="form-control"
+placeholder='Enter your password'
+value={password}
+onChange={(e)=>setPassword(e.target.value)}
+
+/> <br />
+{/* {password} */}
+<br />
+
+<button className="btn btn-primary" type='submit'>Signin</button>
+</form>
+
+<br />
+<p>Don't have an account? <Link to="/signup">Sign Up</Link></p>
+
+</div>
+</div>
+)
+}
 
 export default Signin;
